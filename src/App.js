@@ -3,6 +3,7 @@ import Header from "./Header";
 import Content from "./Content";
 import Footer from "./Footer";
 import { useState } from "react";
+import AddItem from "./AddItem";
 
 // jsx allows us to put javascript in html.
 // parent component
@@ -32,6 +33,32 @@ function App() {
     },
   ]);
 
+  const [newItem, setNewItem] = useState("");
+
+  const setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem("shoppinglist", JSON.stringify(newItems));
+  }
+
+  const addItem = (item) => {
+    const id = items.length ? items[items.length - 1].id + 1 : 1;
+    const myNewItem = {id, checked: false, item}
+    const listItems = [...items, myNewItem];
+    setAndSaveItems(listItems);
+    
+  }
+
+  const handleSubmit = (e) => {
+    // it will submit the form but not reload the page.
+    e.preventDefault();
+    if (!newItem) return;
+
+    // add item
+
+    // set it to empty
+    setNewItem('');
+  };
+
   // this function will play with the state.
   const handleCheck = (id) => {
     // changing the state
@@ -43,15 +70,8 @@ function App() {
     const listItems = items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
-    // changing the state
-    setItems(listItems);
-
-    // changing the state permanently using localStorage.
-    // this is similar to redis in python.
-    // it is a fast input-output storage.
-    // setItem
-    // getItem
-    localStorage.setItem("shoppinglist", JSON.stringify(listItems));
+    setAndSaveItems(listItems);
+    
   };
 
   const handleDelete = (id) => {
@@ -61,15 +81,18 @@ function App() {
     // we passed in.
     const listItems = items.filter((item) => item.id !== id);
     // changing the state
-    setItems(listItems);
-    // saving the new list to listItems
-    localStorage.setItem("shoppinglist", JSON.stringify(listItems));
+    setAndSaveItems(listItems);
   };
 
   return (
     <div className="App">
       {/* children component */}
       <Header title="Groceries List" />
+      <AddItem
+        newItem={newItem}
+        setNewItem={setNewItem}
+        handleSubmit={handleSubmit}
+      />
       <Content
         items={items}
         handleCheck={handleCheck}

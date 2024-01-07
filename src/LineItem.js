@@ -5,7 +5,7 @@ const LineItem = ({ item, handleCheck, handleDelete }) => {
   return (
     // each item of the list should be unique...
             // hence the use of a key or id.
-            <li className="item" key={item.id}>
+            <li className="item">
               <input
                 type="checkbox"
                 checked={item.checked}
