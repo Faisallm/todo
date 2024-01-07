@@ -1,25 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+// importing react components
+import Header from "./Header";
+import Content from "./Content";
+import Footer from "./Footer";
 
+// jsx allows us to put javascript in html.
+// parent component
 function App() {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* children component */}
+      <Header />
+      <Content />
+      <Footer />
     </div>
   );
 }
 
+// to make the App component exportable.
 export default App;
