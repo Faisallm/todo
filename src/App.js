@@ -4,6 +4,7 @@ import Content from "./Content";
 import Footer from "./Footer";
 import { useState } from "react";
 import AddItem from "./AddItem";
+import SearchItem from "./SearchItem";
 
 // jsx allows us to put javascript in html.
 // parent component
@@ -15,48 +16,43 @@ function App() {
   // setItems is the setter.
   // list of objects
   // array of objects
-  const [items, setItems] = useState([
-    {
-      id: 1,
-      checked: false,
-      item: "One half pound bag of Cocoa Covered Almonds Unsalted",
-    },
-    {
-      id: 2,
-      checked: false,
-      item: "Item 2",
-    },
-    {
-      id: 3,
-      checked: false,
-      item: "Item 3",
-    },
-  ]);
+  const [items, setItems] = useState(
+    JSON.parse(localStorage.getItem("shoppinglist"))
+  );
 
   const [newItem, setNewItem] = useState("");
+  const [search, setSearch] = useState("");
 
   const setAndSaveItems = (newItems) => {
     setItems(newItems);
     localStorage.setItem("shoppinglist", JSON.stringify(newItems));
-  }
+  };
 
   const addItem = (item) => {
+    // getting the last item id or set to 1
     const id = items.length ? items[items.length - 1].id + 1 : 1;
-    const myNewItem = {id, checked: false, item}
+    // creating a new item
+    const myNewItem = { id, checked: false, item };
+    // create a new list of previous items + appended...
+    // new item.
     const listItems = [...items, myNewItem];
     setAndSaveItems(listItems);
-    
-  }
+  };
 
   const handleSubmit = (e) => {
     // it will submit the form but not reload the page.
+    // preventing the default behavior of submit.
+    // prevent page reload
     e.preventDefault();
+    // if the addItem form is empty
     if (!newItem) return;
+    // console.log(newItem)
 
     // add item
+    addItem(newItem);
 
-    // set it to empty
-    setNewItem('');
+    // reset it to empty after adding
+    setNewItem("");
   };
 
   // this function will play with the state.
@@ -71,7 +67,6 @@ function App() {
       item.id === id ? { ...item, checked: !item.checked } : item
     );
     setAndSaveItems(listItems);
-    
   };
 
   const handleDelete = (id) => {
@@ -93,8 +88,12 @@ function App() {
         setNewItem={setNewItem}
         handleSubmit={handleSubmit}
       />
+      <SearchItem search={search} setSearch={setSearch} />
       <Content
-        items={items}
+        items={items.filter((item) =>
+          // is this a strong search algorithm?
+          item.item.toLowerCase().includes(search.toLowerCase())
+        )}
         handleCheck={handleCheck}
         handleDelete={handleDelete}
       />
