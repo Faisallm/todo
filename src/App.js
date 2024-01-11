@@ -2,7 +2,7 @@
 import Header from "./Header";
 import Content from "./Content";
 import Footer from "./Footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AddItem from "./AddItem";
 import SearchItem from "./SearchItem";
 
@@ -16,17 +16,17 @@ function App() {
   // setItems is the setter.
   // list of objects
   // array of objects
-  const [items, setItems] = useState(
-    JSON.parse(localStorage.getItem("shoppinglist"))
-  );
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem("shoppinglist")) || []);
 
   const [newItem, setNewItem] = useState("");
   const [search, setSearch] = useState("");
 
-  const setAndSaveItems = (newItems) => {
-    setItems(newItems);
-    localStorage.setItem("shoppinglist", JSON.stringify(newItems));
-  };
+  useEffect(() => {
+    // anytime items list changes we make a change to localStorage with useEffect
+    // hence no need for the function setAndSaveItems.
+    // makes sense!
+    localStorage.setItem("shoppinglist", JSON.stringify(items));
+  }, [items]);
 
   const addItem = (item) => {
     // getting the last item id or set to 1
@@ -36,7 +36,7 @@ function App() {
     // create a new list of previous items + appended...
     // new item.
     const listItems = [...items, myNewItem];
-    setAndSaveItems(listItems);
+    setItems(listItems);
   };
 
   const handleSubmit = (e) => {
@@ -66,7 +66,7 @@ function App() {
     const listItems = items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
-    setAndSaveItems(listItems);
+    setItems(listItems);
   };
 
   const handleDelete = (id) => {
@@ -76,7 +76,7 @@ function App() {
     // we passed in.
     const listItems = items.filter((item) => item.id !== id);
     // changing the state
-    setAndSaveItems(listItems);
+    setItems(listItems);
   };
 
   return (
